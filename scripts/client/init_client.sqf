@@ -13,6 +13,7 @@ write_credit_line = compileFinal preprocessFileLineNumbers "scripts\client\ui\wr
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\ammoboxes\ammobox_action_manager.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\build\build_overlay.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\build\do_build.sqf";
+[] spawn compileFinal preprocessFileLineNumbers "scripts\client\commander\enforce_whitelist.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\empty_vehicles_marker.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\fob_markers.sqf";
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\markers\group_icons.sqf";
@@ -48,3 +49,5 @@ player addMPEventHandler ["MPKilled", {_this spawn kill_manager}];
 [] spawn compileFinal preprocessFileLineNumbers "scripts\client\ui\intro.sqf";
 
 [] execVM "onPlayerRespawn.sqf";
+
+[ player ] joinSilent (createGroup WEST);

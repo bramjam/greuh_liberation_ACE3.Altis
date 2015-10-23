@@ -2,7 +2,7 @@
 
 # Liberation for Arma 3
 
-## Current version : 0.909a (0.1)
+## Current version : 0.911 (0.1)
 This version adds the [ACE3](http://ace3mod.com/) mod on Liberation.
 ACE configurations:
 * Advanced ballistics (sniping becomes alot harder)
@@ -11,7 +11,7 @@ ACE configurations:
 * Vehicle Repair
   * Only Engineers can repair vehicles.
   
-This version is meant as a base / kickstart for your mission. 
+This version is ONLY meant as a base / kickstart for your mission. 
 if you need more/different Ace configuration you must apply them yourself by editing the mission file in Arma Editor.
 
 ## Overview

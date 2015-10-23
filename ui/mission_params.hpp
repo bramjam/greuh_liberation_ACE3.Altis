@@ -96,6 +96,12 @@ class Params
 		texts[] = { $STR_PARAMS_ENABLED, $STR_PARAMS_DISABLED };
 		default = 1;
 	};
+	class CleanupVehicles {
+		title = $STR_CLEANUP_PARAM;
+		values[] = { 0,1,2,4 };
+		texts[] = { $STR_PARAMS_DISABLED, $STR_CLEANUP_PARAM1, $STR_CLEANUP_PARAM2, $STR_CLEANUP_PARAM3 };
+		default = 2;
+	};
 	class Introduction {
 		title = $STR_PARAMS_INTRO;
 		values[] = { 1, 0 };
@@ -112,6 +118,12 @@ class Params
 		title = $STR_PARAMS_FIRSTFOB;
 		values[] = { 1, 0 };
 		texts[] = { $STR_YES, $STR_NO };
+		default = 0;
+	};
+	class Whitelist {
+		title = $STR_WHITELIST_PARAM;
+		values[] = { 1, 0 };
+		texts[] = { $STR_WHITELIST_ENABLED, $STR_PARAMS_DISABLED };
 		default = 0;
 	};
 	class WipeSave1{
