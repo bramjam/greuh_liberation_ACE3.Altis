@@ -2,7 +2,7 @@
 
 # Liberation for Arma 3
 
-## Current version : 0.911 (0.1)
+## Current version : 0.912 (0.1)
 This version adds the [ACE3](http://ace3mod.com/) mod on Liberation.
 ACE configurations:
 * Advanced ballistics (sniping becomes alot harder)
