@@ -22,7 +22,6 @@ class Mission
 		"A3_Weapons_F_Ammoboxes",
 		"A3_Structures_F_Heli_Ind_Machines",
 		"A3_Structures_F_Heli_Items_Airport",
-		"3DEN",
 		"A3_Air_F_Beta_Heli_Transport_01",
 		"A3_Modules_F",
 		"ace_advanced_ballistics",
@@ -30,7 +29,8 @@ class Mission
 		"ace_repair",
 		"ace_captives",
 		"ace_common",
-		"ace_cargo"
+		"ace_cargo",
+		"3DEN"
 	};
 	addOnsAuto[]=
 	{

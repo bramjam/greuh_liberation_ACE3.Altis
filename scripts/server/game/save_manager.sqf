@@ -46,6 +46,8 @@ armor_weight = 33;
 air_weight = 33;
 GRLIB_vehicle_to_military_base_links = [];
 GRLIB_permissions = [];
+ai_groups = [];
+saved_intel_res = 0;
 
 no_kill_handler_classnames = [FOB_typename, huron_typename];
 _classnames_to_save = [FOB_typename, huron_typename];
@@ -71,9 +73,6 @@ if ( !isNil "greuh_liberation_savegame" ) then {
 	buildings_to_save = greuh_liberation_savegame select 2;
 	time_of_day = greuh_liberation_savegame select 3;
 	combat_readiness = greuh_liberation_savegame select 4;
-	date_year = greuh_liberation_savegame select 5;
-	date_month = greuh_liberation_savegame select 6;
-	date_day = greuh_liberation_savegame select 7;
 	saved_ammo_res = greuh_liberation_savegame select 8;
 
 	if ( "capture_13_1_2_26_25" in blufor_sectors ) then { // Patching Molos Airfield which was a town instead of a factory
@@ -128,6 +127,16 @@ if ( !isNil "greuh_liberation_savegame" ) then {
 		GRLIB_permissions = greuh_liberation_savegame select 12;
 	};
 
+	if ( count greuh_liberation_savegame > 13 ) then {
+		ai_groups = greuh_liberation_savegame select 13;
+	};
+
+	if ( count greuh_liberation_savegame > 14 ) then {
+		saved_intel_res = greuh_liberation_savegame select 14;
+	};
+
+	setDate [ 2045, 6, 6, time_of_day, 0];
+
 	_correct_fobs = [];
 	{
 		_next_fob = _x;
@@ -153,10 +162,7 @@ if ( !isNil "greuh_liberation_savegame" ) then {
 			};
 			_nextbuilding = _nextclass createVehicle _nextpos;
 			_nextbuilding setVectorUp [0,0,1];
-			_nextbuilding setpos _nextpos;
-			_nextbuilding setdir _nextdir;
-			_nextbuilding setVectorUp [0,0,1];
-			_nextbuilding setpos _nextpos;
+			_nextbuilding setPosATL _nextpos;
 			_nextbuilding setdir _nextdir;
 			_nextbuilding setdamage 0;
 			if ( _hascrew ) then {
@@ -174,7 +180,24 @@ if ( !isNil "greuh_liberation_savegame" ) then {
 
 	} foreach buildings_to_save;
 
-	setDate [date_year, date_month, date_day, time_of_day, date select 4];
+	sleep 0.1;
+
+	{
+		private [ "_nextgroup", "_grp" ];
+		_nextgroup = _x;
+		_grp = createGroup WEST;
+
+		{
+			private [ "_nextunit", "_nextpos", "_nextdir", "_nextobj"];
+			_nextunit = _x;
+			_nextpos = [(_nextunit select 1) select 0, (_nextunit select 1) select 1, ((_nextunit select 1) select 2) + 0.2];
+			_nextdir = _nextunit select 2;
+			(_nextunit select 0) createUnit [ _nextpos, _grp, 'this addMPEventHandler ["MPKilled", {_this spawn kill_manager}] '];
+			_nextobj = ((units _grp) select ((count (units _grp)) - 1));
+			_nextobj setPosATL _nextpos;
+			_nextobj setDir _nextdir;
+		} foreach _nextgroup;
+	} foreach ai_groups;
 };
 
 publicVariable "blufor_sectors";
@@ -221,6 +244,7 @@ while { true } do {
 
 		trigger_server_save = false;
 		buildings_to_save = [];
+		ai_groups = [];
 
 		_all_buildings = [];
 		{
@@ -234,11 +258,32 @@ while { true } do {
  				} ] call BIS_fnc_conditionalSelect;
 
 			_all_buildings = _all_buildings + _nextbuildings;
+
+			{
+				_nextgroup = _x;
+				if (  side _nextgroup == WEST ) then {
+					if ( { isPlayer _x } count ( units _nextgroup ) == 0 ) then {
+						if ( { alive _x } count ( units _nextgroup ) > 0  ) then {
+							if ( _fobpos distance (leader _nextgroup) < GRLIB_fob_range * 2 ) then {
+								private [ "_grouparray" ];
+								_grouparray = [];
+								{
+									if ( alive _x && (vehicle _x == _x ) ) then {
+										_grouparray pushback [ typeof _x, getPosATL _x, getDir _x ];
+									};
+								} foreach (units _nextgroup);
+
+								ai_groups pushback _grouparray;
+							};
+						};
+					};
+				};
+			} foreach allGroups;
 		} foreach GRLIB_all_fobs;
 
 		{
 			_nextclass = typeof _x;
-			_nextpos = [(getpos _x) select 0, (getpos _x) select 1, 0];
+			_nextpos = getposATL _x;
 			_nextdir = getdir _x;
 			_hascrew = false;
 			if ( _nextclass in _classnames_to_save_blu ) then {
@@ -285,8 +330,8 @@ while { true } do {
 			_stats pushback stats_fobs_lost;
 			_stats pushback stats_readiness_earned;
 
-			greuh_liberation_savegame = [ blufor_sectors, GRLIB_all_fobs, buildings_to_save, time_of_day, round combat_readiness, date select 0, date select 1, date select 2, round resources_ammo, _stats,
-			[ round infantry_weight, round armor_weight, round air_weight ], GRLIB_vehicle_to_military_base_links, GRLIB_permissions ];
+			greuh_liberation_savegame = [ blufor_sectors, GRLIB_all_fobs, buildings_to_save, time_of_day, round combat_readiness,0,0,0, round resources_ammo, _stats,
+			[ round infantry_weight, round armor_weight, round air_weight ], GRLIB_vehicle_to_military_base_links, GRLIB_permissions, ai_groups, resources_intel ];
 
 			profileNamespace setVariable [ GRLIB_save_key, greuh_liberation_savegame ];
 			saveProfileNamespace;
